@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generate QR Code</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #d6eeff;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh;
+      gap: 20px;
+      padding: 20px;
+    }
+    h2 { color: #2c4a6e; }
+    label { color: #4a7aa5; font-size: 0.9rem; }
+    input {
+      padding: 10px 16px; border-radius: 12px;
+      border: 2px solid #a8ccec;
+      font-size: 1rem; width: 320px; max-width: 90vw;
+      outline: none;
+    }
+    input:focus { border-color: #5a9fd4; }
+    button {
+      padding: 12px 32px; border-radius: 16px;
+      background: #5a9fd4; color: white;
+      border: none; font-size: 1rem; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(90,159,212,0.35);
+      transition: transform 0.15s;
+    }
+    button:hover { transform: scale(1.04); }
+    #qr-output {
+      background: white; padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(90,159,212,0.2);
+      display: none;
+    }
+    p.note { font-size: 0.8rem; color: #7aaac5; max-width: 320px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>🔗 Generate QR Code</h2>
+  <label>Masukkan URL website kamu:</label>
+  <input type="url" id="url-input" placeholder="https://namawebsite.com" />
+  <button onclick="generateQR()">Generate QR</button>
+  <div id="qr-output">
+    <img id="qr-img" src="" alt="QR Code" style="width:220px;height:220px;"/>
+  </div>
+  <p class="note">Scan QR ini akan langsung membuka website-mu. Bisa di-screenshot dan di-print 🖨️</p>
+
+  <script>
+    function generateQR() {
+      const url = document.getElementById('url-input').value.trim();
+      if (!url) { alert('Masukkan URL dulu ya!'); return; }
+      const encoded = encodeURIComponent(url);
+      const src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}&color=2c4a6e&bgcolor=d6eeff`;
+      document.getElementById('qr-img').src = src;
+      document.getElementById('qr-output').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
