@@ -3,61 +3,241 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Generate QR Code</title>
+  <title>Generate QR ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: sans-serif;
-      background: #d6eeff;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #f5e6f7, #dceeff, #fce4f0);
+      background-size: 400% 400%;
+      animation: bgShift 10s ease infinite;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       min-height: 100vh;
-      gap: 20px;
-      padding: 20px;
+      gap: 22px;
+      padding: 28px 20px;
     }
-    h2 { color: #2c4a6e; }
-    label { color: #4a7aa5; font-size: 0.9rem; }
+    @keyframes bgShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    h2 {
+      font-family: 'Dancing Script', cursive;
+      color: #7c3aed;
+      font-size: 2rem;
+      text-shadow: 0 2px 12px rgba(168,85,247,.3);
+    }
+
+    label { color: #7a5fa5; font-size: 0.85rem; letter-spacing: .3px; }
+
     input {
-      padding: 10px 16px; border-radius: 12px;
-      border: 2px solid #a8ccec;
+      padding: 12px 18px; border-radius: 16px;
+      border: 2px solid rgba(168,85,247,.3);
       font-size: 1rem; width: 320px; max-width: 90vw;
       outline: none;
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(10px);
+      transition: border-color .2s;
     }
-    input:focus { border-color: #5a9fd4; }
+    input:focus { border-color: #a855f7; }
+
     button {
-      padding: 12px 32px; border-radius: 16px;
-      background: #5a9fd4; color: white;
+      padding: 13px 36px; border-radius: 20px;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: white;
       border: none; font-size: 1rem; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(90,159,212,0.35);
-      transition: transform 0.15s;
+      box-shadow: 0 6px 20px rgba(168,85,247,.4);
+      transition: transform .15s, box-shadow .15s;
+      font-family: 'Inter', sans-serif;
     }
-    button:hover { transform: scale(1.04); }
+    button:hover  { transform: scale(1.05); box-shadow: 0 8px 28px rgba(168,85,247,.5); }
+    button:active { transform: scale(.96); }
+
     #qr-output {
-      background: white; padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(90,159,212,0.2);
       display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
     }
-    p.note { font-size: 0.8rem; color: #7aaac5; max-width: 320px; text-align: center; }
+    #qr-output.visible { display: flex; }
+
+    /* Heart canvas wrapper */
+    .heart-canvas-wrap {
+      position: relative;
+      filter: drop-shadow(0 8px 32px rgba(168,85,247,.45)) drop-shadow(0 2px 8px rgba(255,100,160,.3));
+      animation: heartFloat 3s ease-in-out infinite alternate;
+    }
+    @keyframes heartFloat {
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(-8px) scale(1.03); }
+    }
+
+    #heart-canvas {
+      display: block;
+    }
+
+    .qr-caption {
+      font-family: 'Dancing Script', cursive;
+      color: #a855f7;
+      font-size: 1.25rem;
+      text-align: center;
+      text-shadow: 0 1px 8px rgba(168,85,247,.3);
+    }
+
+    .download-btn {
+      padding: 10px 28px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(168,85,247,.35);
+      color: #7c3aed;
+      font-size: .88rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s, transform .15s;
+    }
+    .download-btn:hover { background: rgba(168,85,247,.12); transform: scale(1.03); }
+
+    p.note {
+      font-size: 0.78rem; color: #9a7abf;
+      max-width: 300px; text-align: center; line-height: 1.6;
+    }
+
+    /* Floating deco hearts */
+    .deco-hearts { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .dh {
+      position: absolute;
+      font-size: 1.4rem;
+      opacity: .18;
+      animation: dhFloat linear infinite;
+    }
+    @keyframes dhFloat {
+      0%   { transform: translateY(0) rotate(0deg); opacity: .18; }
+      100% { transform: translateY(-100vh) rotate(30deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
-  <h2>🔗 Generate QR Code</h2>
+
+  <!-- Floating background hearts -->
+  <div class="deco-hearts" id="deco-hearts"></div>
+
+  <h2>💜 QR Code Generator</h2>
   <label>Masukkan URL website kamu:</label>
-  <input type="url" id="url-input" placeholder="https://namawebsite.com" />
-  <button onclick="generateQR()">Generate QR</button>
+  <input type="url" id="url-input" placeholder="https://namawebsite.vercel.app" />
+  <button onclick="generateQR()">Buat QR ❤️</button>
+
   <div id="qr-output">
-    <img id="qr-img" src="" alt="QR Code" style="width:220px;height:220px;"/>
+    <div class="heart-canvas-wrap">
+      <canvas id="heart-canvas" width="300" height="280"></canvas>
+    </div>
+    <p class="qr-caption">scan untuk membuka surprise 💜</p>
+    <button class="download-btn" onclick="downloadQR()">⬇ Simpan gambar</button>
   </div>
-  <p class="note">Scan QR ini akan langsung membuka website-mu. Bisa di-screenshot dan di-print 🖨️</p>
+
+  <p class="note">Scan QR ini akan langsung membuka website-mu. Screenshot lalu bagikan ke dia 🖨️</p>
 
   <script>
+    // ── Floating background hearts ──
+    (function() {
+      const container = document.getElementById('deco-hearts');
+      const emojis = ['💜','🩵','💕','💗','💝','✨'];
+      for (let i = 0; i < 14; i++) {
+        const el = document.createElement('div');
+        el.className = 'dh';
+        el.textContent = emojis[i % emojis.length];
+        el.style.cssText = `
+          left:${Math.random()*100}%;
+          top:${Math.random()*100}%;
+          animation-duration:${8 + Math.random()*10}s;
+          animation-delay:${Math.random()*8}s;
+          font-size:${1 + Math.random()*1.4}rem;
+        `;
+        container.appendChild(el);
+      }
+    })();
+
+    // ── Heart clip-path on canvas ──
+    function heartPath(ctx, cx, cy, size) {
+      // Classic parametric heart curve scaled to `size`
+      ctx.beginPath();
+      for (let t = 0; t <= Math.PI * 2; t += 0.01) {
+        const x = size * 16 * Math.pow(Math.sin(t), 3);
+        const y = -size * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        if (t === 0) ctx.moveTo(cx + x, cy + y);
+        else         ctx.lineTo(cx + x, cy + y);
+      }
+      ctx.closePath();
+    }
+
     function generateQR() {
       const url = document.getElementById('url-input').value.trim();
-      if (!url) { alert('Masukkan URL dulu ya!'); return; }
+      if (!url) { alert('Masukkan URL dulu ya! 🥺'); return; }
+
+      // Use goqr.me API — returns plain PNG
+      const size = 600;
       const encoded = encodeURIComponent(url);
-      const src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}&color=2c4a6e&bgcolor=d6eeff`;
-      document.getElementById('qr-img').src = src;
-      document.getElementById('qr-output').style.display = 'block';
+      const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}&color=7c3aed&bgcolor=ffffff&qzone=2&format=png`;
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => drawHeartQR(img);
+      img.onerror = () => alert('Gagal load QR, coba lagi 🥺');
+      img.src = apiUrl;
+    }
+
+    function drawHeartQR(qrImg) {
+      const canvas = document.getElementById('heart-canvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      const cx = W / 2;
+      const cy = H / 2 + 10;
+      const heartSize = 8.8; // controls heart scale
+
+      ctx.clearRect(0, 0, W, H);
+
+      // 1. Draw gradient background heart fill
+      const grad = ctx.createRadialGradient(cx, cy - 20, 10, cx, cy, 160);
+      grad.addColorStop(0,   '#f5d0fe');
+      grad.addColorStop(0.5, '#e9b8fd');
+      grad.addColorStop(1,   '#c084fc');
+
+      heartPath(ctx, cx, cy, heartSize);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // 2. Clip to heart shape, then draw QR
+      ctx.save();
+      heartPath(ctx, cx, cy, heartSize * 0.82); // slightly smaller clip
+      ctx.clip();
+
+      // Center QR inside heart
+      const qSize = 195;
+      ctx.drawImage(qrImg, cx - qSize/2, cy - qSize/2 - 4, qSize, qSize);
+
+      ctx.restore();
+
+      // 3. Heart border glow
+      heartPath(ctx, cx, cy, heartSize);
+      ctx.strokeStyle = 'rgba(168,85,247,0.6)';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Show output
+      const output = document.getElementById('qr-output');
+      output.classList.add('visible');
+    }
+
+    function downloadQR() {
+      const canvas = document.getElementById('heart-canvas');
+      const link = document.createElement('a');
+      link.download = 'qr-love.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
     }
   </script>
 </body>
