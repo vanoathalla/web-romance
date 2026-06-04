@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>A Little Secret 🌸</title>
+  <title>A Little Secret ✨</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -11,29 +11,34 @@
 </head>
 <body>
 
+  <!-- ==================== INTRO OVERLAY (after scan) ==================== -->
+  <div id="intro-overlay">
+    <!-- canvas for particle effects -->
+    <canvas id="intro-canvas"></canvas>
+    <!-- Content varies per animation type, injected by JS -->
+    <div id="intro-content"></div>
+  </div>
+
   <!-- ==================== PAGE 1: LOGIN ==================== -->
-  <div id="page-login" class="page active">
+  <div id="page-login" class="page hidden">
 
     <!-- Ambient blobs -->
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
     <div class="blob blob3"></div>
 
-    <!-- Floating deco -->
-    <div class="fdeco f-sunflower">🌻</div>
-    <div class="fdeco f-rose">�</div>
-    <div class="fdeco f-lily">�</div>
-    <div class="fdeco f-daisy">�</div>
-    <div class="fdeco f-moon">🌙</div>
-    <div class="fdeco f-heart">💙</div>
-    <div class="fdeco f-star1">✨</div>
-    <div class="fdeco f-star2">⭐</div>
-    <div class="fdeco f-cherry">🌸</div>
-
     <!-- Cloud shapes -->
     <div class="cloud-shape cs1"></div>
     <div class="cloud-shape cs2"></div>
     <div class="cloud-shape cs3"></div>
+
+    <!-- Decorative SVG flowers (background, not emoji) -->
+    <div class="svg-deco sd1"></div>
+    <div class="svg-deco sd2"></div>
+    <div class="svg-deco sd3"></div>
+    <div class="svg-deco sd4"></div>
+    <div class="svg-deco sd5"></div>
+    <div class="svg-deco sd6"></div>
 
     <!-- Login Card -->
     <div class="login-card">
@@ -41,11 +46,6 @@
         <div class="lock-emoji">🔐</div>
         <div class="lock-ring"></div>
         <div class="lock-ring ring2"></div>
-      </div>
-
-      <div class="from-for-wrap">
-        <p class="script-font name-line">From: Ara</p>
-        <p class="script-font name-line">For: Bima</p>
       </div>
 
       <p class="script-font subtitle-line">a little secret...</p>
@@ -80,13 +80,15 @@
 
   <!-- ==================== BLOOM OVERLAY ==================== -->
   <div id="bloom-overlay" class="hidden">
-    <!-- Rose flood -->
-    <div class="rose-flood" id="rose-flood">
-      <!-- roses injected by JS -->
-    </div>
-    <!-- Center text -->
-    <div class="bloom-center-text" id="bloom-text">
-      <p class="script-font bloom-welcome">Welcome �</p>
+    <!-- Particle flowers container -->
+    <div class="flower-burst" id="flower-burst"></div>
+    <!-- Petal rain -->
+    <div class="petal-rain" id="petal-rain"></div>
+    <!-- Center welcome -->
+    <div class="bloom-center" id="bloom-center">
+      <div class="bloom-icon-svg"></div>
+      <p class="script-font bloom-welcome">Welcome, Sayang 💜</p>
+      <p class="script-font bloom-sub">a little surprise for you...</p>
     </div>
   </div>
 
@@ -94,44 +96,79 @@
   <div id="page-main" class="page hidden">
 
     <!-- Fixed background deco -->
+    <!-- Ambient floating particles -->
+    <div id="ambient-particles"></div>
     <div class="main-blob mb1"></div>
     <div class="main-blob mb2"></div>
-    <div class="fdeco2 ms1">⭐</div>
-    <div class="fdeco2 ms2">✨</div>
-    <div class="fdeco2 ms3">🌟</div>
-    <div class="fdeco2 ms4">⭐</div>
-    <div class="fdeco2 ms5">✨</div>
+
+    <!-- Decorative background SVG elements -->
+    <div class="main-svg-deco msd1"></div>
+    <div class="main-svg-deco msd2"></div>
+    <div class="main-svg-deco msd3"></div>
 
     <!-- Scroll content -->
     <div class="main-scroll" id="main-scroll">
 
       <!-- ── SECTION 1: Hero ── -->
       <section class="hero-section reveal">
-        <div class="hero-quote script-font">"being alive<br/>is the<br/><em>special<br/>occasion!</em>"</div>
-        <div class="hero-bouquet">💐</div>
-        <div class="hero-stars">
-          <span class="hs hs1">⭐</span>
-          <span class="hs hs2">✨</span>
-          <span class="hs hs3">🌟</span>
+        <div class="hero-top">
+          <div class="hero-quote script-font">
+            <span class="hero-quote-gradient">"being alive<br/>is the<br/>special<br/>occasion!"</span>
+          </div>
+          <div class="hero-deco">
+            <div class="hd-star-svg s1"></div>
+            <div class="hd-star-svg s2"></div>
+            <div class="hd-star-svg s3"></div>
+          </div>
         </div>
+        <!-- Hero Bouquet removed in favor of background illustrations -->
       </section>
 
+      <div class="scroll-indicator reveal">
+        <span>scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+
       <!-- ── SECTION 2: Music Card ── -->
-      <section class="section-gap reveal">
-        <div class="glass-card music-card">
-          <div class="music-art">🎵</div>
-          <div class="music-body">
-            <p class="music-title">Eenie Meenie</p>
-            <p class="music-artist">Sean Kingston ft. Justin Bieber</p>
+      <section class="section-gap reveal-left">
+        <p class="section-label script-font">🎵 lagu buat kamu</p>
+        <div class="glass-card music-player-card">
+          <div class="mp-cover">
+            <div class="mp-disc">
+              <div class="mp-disc-inner"></div>
+            </div>
           </div>
-          <a class="play-circle" href="https://open.spotify.com/track/7hXASu1cFHAFxv4tBpEkLw" target="_blank" rel="noopener">
-            <span>▶</span>
-          </a>
+          <div class="mp-info">
+            <p class="mp-title">Eenie Meenie</p>
+            <p class="mp-artist">Sean Kingston ft. Justin Bieber</p>
+          </div>
+          <audio id="song-audio" preload="metadata">
+            <source src="song.mp3" type="audio/mpeg" />
+          </audio>
+          <div class="mp-controls">
+            <div class="mp-bar-wrap">
+              <span class="mp-time" id="mp-current">0:00</span>
+              <div class="mp-progress-bg" id="mp-progress-bg">
+                <div class="mp-progress-fill" id="mp-progress-fill"></div>
+              </div>
+              <span class="mp-time" id="mp-duration">0:00</span>
+            </div>
+            <button class="mp-play-btn" id="mp-play-btn" aria-label="Play / Pause">
+              <span class="mp-play-icon" id="mp-play-icon">▶</span>
+            </button>
+          </div>
+          <div class="mp-eq" id="mp-eq">
+            <span class="mq-bar"></span>
+            <span class="mq-bar"></span>
+            <span class="mq-bar"></span>
+            <span class="mq-bar"></span>
+            <span class="mq-bar"></span>
+          </div>
         </div>
       </section>
 
       <!-- ── SECTION 3: Vinyl + Quote ── -->
-      <section class="section-gap vinyl-quote-row reveal">
+      <section class="section-gap vinyl-quote-row reveal-right">
         <div class="vinyl-wrap">
           <div class="vinyl spin">
             <div class="vinyl-inner">
@@ -140,73 +177,118 @@
               <p class="vl-sub">B SIDE · 45 RPM</p>
             </div>
           </div>
+          <div class="vinyl-glow"></div>
         </div>
         <div class="scrap-note script-font">
-          "you still have<br/>a lot of time to<br/>make yourself be<br/>what you want."
+          "you still have<br/>a lot of time to<br/>make yourself be<br/><span class="scrap-highlight">what you want.</span>"
         </div>
       </section>
 
-      <!-- ── SECTION 4: YouTube ── -->
-      <section class="section-gap reveal">
-        <div class="yt-card glass-card">
-          <p class="card-label">🎬 Video buat kamu</p>
-          <div class="yt-frame">
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Video spesial"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+      <!-- ── SECTION 4: A note for you ── -->
+      <section class="section-gap reveal-scale">
+        <div class="note-card glass-card">
+          <div class="note-deco-stars">
+            <span class="ns ns1">✦</span>
+            <span class="ns ns2">✧</span>
+            <span class="ns ns3">✦</span>
+          </div>
+          <p class="note-eyebrow script-font">a little reminder</p>
+          <p class="note-big script-font">"you are loved<br/>more than you<br/><em>know.</em>"</p>
+          <div class="note-line"></div>
+          <p class="note-small">jarak bukan penghalang. kamu selalu ada di sini 💜</p>
+          <div class="note-float-hearts">
+            <span class="nh nh1">💜</span>
+            <span class="nh nh2">🩵</span>
+            <span class="nh nh3">💜</span>
           </div>
         </div>
       </section>
 
       <!-- ── SECTION 5: Polaroid Photos ── -->
-      <section class="section-gap reveal">
-        <p class="section-label script-font">memories 📸</p>
+      <section class="section-gap memories-section">
+        <p class="section-label script-font reveal">📸 memories</p>
         <div class="polaroid-grid">
-          <div class="polaroid pol1">
-            <div class="pol-img"></div>
-            <p class="pol-caption script-font">bestie 🌸</p>a
+
+          <!-- photo1: 1:1 landscape, spans 2 cols -->
+          <div class="polaroid-wrap pol-wrap-1 pol-flip">
+            <div class="polaroid pol-square">
+              <div class="pol-img-wrap ratio-1-1">
+                <img src="photo1.png" alt="us ✨" class="pol-photo" />
+              </div>
+            </div>
           </div>
-          <div class="polaroid pol2">
-            <div class="pol-img"></div>
-            <p class="pol-caption script-font">always 💙</p>
+
+          <!-- photo2: 3:4 portrait -->
+          <div class="polaroid-wrap pol-wrap-2 pol-flip">
+            <div class="polaroid">
+              <div class="pol-img-wrap ratio-3-4">
+                <img src="photo2.png" alt="always 💜" class="pol-photo" />
+              </div>
+            </div>
           </div>
-          <div class="polaroid pol3">
-            <div class="pol-img"></div>
-            <p class="pol-caption script-font">cherish 🌼</p>
+
+          <!-- photo3: 3:4 portrait -->
+          <div class="polaroid-wrap pol-wrap-3 pol-flip">
+            <div class="polaroid">
+              <div class="pol-img-wrap ratio-3-4">
+                <img src="photo3.png" alt="dreaming ✨" class="pol-photo" />
+              </div>
+            </div>
           </div>
-          <div class="polaroid pol4">
-            <div class="pol-img"></div>
-            <p class="pol-caption script-font">forever ✨</p>
+
+        </div>
+      </section>
+
+      <!-- ── SECTION 6: Bunga Gallery ── -->
+      <section class="section-gap reveal-left">
+        <p class="section-label script-font">✿ in full bloom</p>
+        <div class="bloom-gallery">
+          <div class="bloom-tile bt1">
+            <div class="bt-flower bt-rose"></div>
+            <p class="bt-text script-font">roses for you</p>
+          </div>
+          <div class="bloom-tile bt2">
+            <div class="bt-flower bt-sunflower"></div>
+            <p class="bt-text script-font">always sunny</p>
+          </div>
+          <div class="bloom-tile bt3">
+            <div class="bt-flower bt-tulip"></div>
+            <p class="bt-text script-font">so delicate</p>
+          </div>
+          <div class="bloom-tile bt4">
+            <div class="bt-flower bt-daisy"></div>
+            <p class="bt-text script-font">stay bright</p>
           </div>
         </div>
       </section>
 
-      <!-- ── SECTION 6: Personal Message ── -->
-      <section class="section-gap reveal">
-        <div class="message-card glass-card">
-          <div class="sunflower-art">🌻</div>
-          <div class="stamp-corner">50 ¢</div>
-          <p class="msg-from script-font">From: Ara<br/>For: Bima</p>
-          <p class="msg-body">
-            Kamu udah kerja keras banget buat semua ini, dan kamu layak dapetin
-            semua kebahagiaan yang dateng bareng itu. Aku harap momen ini jadi
-            awal dari hal-hal luar biasa yang bakal terus dateng ke hidupmu.
-            Terus percaya sama dirimu sendiri ya 💙
-          </p>
-          <div class="bloom-stamp script-font">
-            give yourself the time<br/>to <span>BLOOM</span> 🌸
+      <!-- ── SECTION 8: Birthday Letter ── -->
+      <section class="section-gap reveal-scale">
+        <div class="bday-letter glass-card letter-trigger">
+          <div class="bday-letter-header">
+            <span class="bday-letter-icon">💜</span>
+            <p class="bday-letter-title script-font">Happy birthday, sayang.</p>
+          </div>
+          <div class="bday-letter-body">
+            <p>Semoga di umur yang baru ini kamu selalu diberi kesehatan, kelancaran kerja, rezeki yang berlimpah, dan dipermudah dalam mencapai semua yang kamu impikan di sana.</p>
+            <p>Aku bangga sama semua usaha dan kerja kerasmu. Terima kasih sudah tetap bertahan dan tetap memilih kita meskipun jarak sedang memisahkan.</p>
+            <p>Kamu tuh 7031nya aku. Sesederhana itu, tapi semoga kamu tahu kalau maknanya masih sama sampai hari ini.</p>
+            <p>Selamat ulang tahun. Jaga diri baik-baik, jangan lupa istirahat, dan semoga kita bisa segera merayakan hari spesialmu tanpa terhalang jarak lagi. 💜</p>
           </div>
         </div>
       </section>
 
       <!-- Footer -->
-      <div class="page-footer reveal">
-        <p class="script-font footer-txt">made with 💙 just for you</p>
-        <div class="footer-flowers">🌸 🌼 🌺 🌷 🌻</div>
+      <div class="page-footer">
+        <div class="footer-flowers-row">
+          <span class="ff ff1 ff-cherry"></span>
+          <span class="ff ff2 ff-daisy"></span>
+          <span class="ff ff3 ff-hibiscus"></span>
+          <span class="ff ff4 ff-tulip"></span>
+          <span class="ff ff5 ff-sunflower"></span>
+        </div>
+        <p class="script-font footer-txt">made with 💜 just for you</p>
+        <p class="footer-year">2026 ✨</p>
       </div>
 
     </div>
