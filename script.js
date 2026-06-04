@@ -380,7 +380,7 @@ function showBloom() {
   buildFlowerBurst();
   buildPetalRain();
 
-  // Fade out after 3.8s, then show main page
+  // Fade out after 2.4s, then show main page
   setTimeout(() => {
     overlay.classList.add('fade-out');
     showPageMain();
@@ -388,8 +388,8 @@ function showBloom() {
       overlay.classList.add('hidden');
       overlay.classList.remove('fade-out');
       overlay.style.opacity = '';
-    }, 1000);
-  }, 3800);
+    }, 600);
+  }, 2400);
 }
 
 function buildFlowerBurst() {
@@ -496,7 +496,7 @@ function initAmbientParticles() {
     'rgba(255,214,102,VAL)',
     'rgba(144,200,245,VAL)',
   ];
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 14; i++) {
     const el = document.createElement('div');
     el.className = 'amb-particle';
     const size  = 4 + Math.random() * 10;
@@ -599,7 +599,7 @@ function showPageMain() {
 
   setTimeout(() => checkReveal(), 100);
   initMusicPlayer();
-  initAmbientParticles();
+  setTimeout(() => initAmbientParticles(), 800);
 }
 
 // ============================================================
